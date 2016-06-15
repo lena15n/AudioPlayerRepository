@@ -3,4 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="menu_settings">Settings</string>
+    <string name="audio_player_play">Play</string>
+    <string name="audio_player_stop">Stop</string>
 </resources>
