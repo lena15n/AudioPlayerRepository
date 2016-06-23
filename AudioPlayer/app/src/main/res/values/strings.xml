@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">AudioPlayer</string>
     <string name="playButtonText">Play</string>
+    <string name="pauseButtonText">Pause</string>
     <string name="statusLabelText">Status:</string>
     <string name="songNameLabelText">Music.mp3</string>
 </resources>

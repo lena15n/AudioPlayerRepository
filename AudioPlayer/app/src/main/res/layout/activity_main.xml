@@ -42,4 +42,13 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar"
+        android:layout_marginBottom="48dp"
+        android:layout_above="@+id/playButton"
+        android:layout_alignStart="@+id/playButton"
+        android:layout_alignEnd="@+id/playButton" />
+
 </RelativeLayout>
