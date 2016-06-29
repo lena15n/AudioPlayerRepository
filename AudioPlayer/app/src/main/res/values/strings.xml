@@ -4,4 +4,5 @@
     <string name="pauseButtonText">Pause</string>
     <string name="statusLabelText">Status:</string>
     <string name="songNameLabelText">Music.mp3</string>
+    <string name="service_name">line on my super servicee</string>
 </resources>
