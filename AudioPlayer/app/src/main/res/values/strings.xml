@@ -10,6 +10,7 @@
     <string name="status_idle">Status: Idle</string>
     <string name="status_playing">Status: Playing</string>
     <string name="status_paused">Status: Paused</string>
+    <string name="non_status">Non Status</string>
 
     <string name="button_play">Play</string>
     <string name="button_pause">Pause</string>

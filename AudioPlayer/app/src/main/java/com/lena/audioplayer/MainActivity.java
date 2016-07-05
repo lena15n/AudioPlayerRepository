@@ -1,6 +1,5 @@
 package com.lena.audioplayer;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -61,9 +60,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        sharedPreferences = this.getSharedPreferences("status", MODE_PRIVATE);
+        sharedPreferences = this.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(STATUS_STATE, status.getString());
+        //editor.apply();
         editor.apply();
 
 
@@ -73,29 +73,40 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        /*if (status == null) {
-            sharedPreferences = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
-            String savedStatusValue = sharedPreferences.getString(STATUS_STATE, "Non Status");
+        //записывать сюда еще и текущее время проигрывания музыки
+        sharedPreferences = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
+        String savedStatusValue = sharedPreferences.getString(STATUS_STATE, "Non status");// how to make it a constant from R class???
 
 
+        final TextView statusLabel = (TextView) findViewById(R.id.statusTextView);
+        final Button playButton = (Button) findViewById(R.id.playButton);
+
+        if (!savedStatusValue.equals("Non status") && statusLabel != null && playButton != null) {
             switch (savedStatusValue) {
                 case "idle": {
-                    status = IDLE;
+                    status = Status.IDLE;
+                    statusLabel.setText(R.string.status_idle);
+                    playButton.setText(R.string.button_play);
                 }
                 break;
                 case "playing": {
                     status = Status.PLAYING;
+                    statusLabel.setText(R.string.status_playing);
+                    playButton.setText(R.string.button_pause);
                 }
                 break;
                 case "paused": {
                     status = Status.PAUSED;
+                    statusLabel.setText(R.string.status_paused);
+                    playButton.setText(R.string.button_play);
                 }
                 break;
                 default: {
                     status = null;
                 }
             }
-        }*/
+        }
+    }
 
         /*TextView textView = (TextView) findViewById(R.id.statusTextView);
 
@@ -104,11 +115,9 @@ public class MainActivity extends AppCompatActivity {
         }
 */
 
-        startService(new Intent(this, AudioPlayerService.class));
+    // Intent intent = new Intent(this, AudioPlayerService.class);
+    //startService(intent);
 
 
-        //binder =  bindService(intent, );
-
-
-    }
+    //binder =  bindService(intent, );
 }
