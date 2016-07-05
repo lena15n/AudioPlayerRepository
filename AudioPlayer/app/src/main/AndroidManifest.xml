@@ -17,11 +17,9 @@
         </activity>
 
         <service
-            android:name=".MyMediaBrowserServiceCompat"
+            android:name=".AudioPlayerService"
             android:enabled="true"
-            android:exported="true"
-            android:label="@string/service_name"
-            android:permission="hz">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>

@@ -2,7 +2,15 @@
     <string name="app_name">AudioPlayer</string>
     <string name="playButtonText">Play</string>
     <string name="pauseButtonText">Pause</string>
-    <string name="statusLabelText">Status:</string>
+
     <string name="songNameLabelText">Music.mp3</string>
     <string name="service_name">line on my super servicee</string>
+
+    <string name="statusLabelText">Status:</string>
+    <string name="status_idle">Status: Idle</string>
+    <string name="status_playing">Status: Playing</string>
+    <string name="status_paused">Status: Paused</string>
+
+    <string name="button_play">Play</string>
+    <string name="button_pause">Pause</string>
 </resources>
