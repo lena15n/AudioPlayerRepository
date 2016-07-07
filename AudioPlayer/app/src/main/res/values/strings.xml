@@ -14,4 +14,12 @@
 
     <string name="button_play">Play</string>
     <string name="button_pause">Pause</string>
+
+    <string name="notifytitle">Два тапка мне в рот да это же..!</string>
+    <string name="notifytext">А это текст))</string>
+    <string name="tickertext">Охренеть, бегущая строка, бежит-бежит, бежит, опять бежит</string>
+
+    <string name="songname">Lately.mp3</string>
+
+
 </resources>

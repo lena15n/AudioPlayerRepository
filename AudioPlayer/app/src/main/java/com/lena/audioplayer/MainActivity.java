@@ -1,5 +1,6 @@
 package com.lena.audioplayer;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -21,8 +22,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sharedPreferences = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
+        //sharedPreferences.edit().remove(STATUS_STATE).apply();
+        // or Settings -> Applications -> Manage applications -> (choose your app) -> Clear data or Uninstall
+
+
         final TextView statusLabel = (TextView) findViewById(R.id.statusTextView);
         final Button playButton = (Button) findViewById(R.id.playButton);
+
+
 
         if (playButton != null && statusLabel != null) {
             playButton.setOnClickListener(new View.OnClickListener() {
@@ -32,12 +40,16 @@ public class MainActivity extends AppCompatActivity {
                             status = Status.PLAYING;
                             statusLabel.setText(R.string.status_playing);
                             playButton.setText(R.string.button_pause);
+
+                            //первый запуск сервиса
+                            startService(new Intent(MainActivity.this, AudioPlayerService.class));
                         }
                         break;
                         case PLAYING: {
                             status = Status.PAUSED;
                             statusLabel.setText(R.string.status_paused);
                             playButton.setText(R.string.button_play);
+                           
                         }
                         break;
                         case PAUSED: {
@@ -106,16 +118,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+
     }
 
-        /*TextView textView = (TextView) findViewById(R.id.statusTextView);
 
-        if (textView != null && status != null) {
-            textView.setText(status.getString());
-        }
-*/
-
-    // Intent intent = new Intent(this, AudioPlayerService.class);
     //startService(intent);
 
 
