@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         sharedPreferences = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
-        //sharedPreferences.edit().remove(STATUS_STATE).apply();
+        sharedPreferences.edit().remove(STATUS_STATE).apply();
         // or Settings -> Applications -> Manage applications -> (choose your app) -> Clear data or Uninstall
 
 
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                             status = Status.PAUSED;
                             statusLabel.setText(R.string.status_paused);
                             playButton.setText(R.string.button_play);
-                           
+
                         }
                         break;
                         case PAUSED: {

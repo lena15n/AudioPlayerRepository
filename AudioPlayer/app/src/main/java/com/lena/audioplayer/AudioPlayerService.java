@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.IBinder;
+import android.os.PowerManager;
 
 public class AudioPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener{
     private static final int NOTIFICATION_ID = 1;
@@ -37,13 +38,13 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
 
 
 
-       /* if (intent.getAction().equals(ACTION_PLAY)) {
+       // if (intent.getAction().equals(ACTION_PLAY)) {
             mediaPlayer =  MediaPlayer.create(getApplicationContext(), R.raw.lately); // initialize it here
             mediaPlayer.setOnPreparedListener(this);
             mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
             //and WifiLock when work with the Internet
-            mediaPlayer.prepareAsync(); // prepare async to not block main thread
-       }*/
+            mediaPlayer.start(); // prepare async to not block main thread
+      // }
 
         //не убьет система, играет до тех пор, пока не убьет пользователь
 
@@ -75,8 +76,15 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
                 .setContentText(resouces.getString(R.string.notifytext) + songName) // Текст уведомления
                 .setTicker(resouces.getString(R.string.tickertext)); // Текст бегушей строки
 
+
         // Notification notification = builder.getNotification(); // до API 16
         Notification notification = builder.build();
+
+        // в эмуляторе не работает, на устройствах - не всегда, зависит от них самих
+        notification.ledARGB = 0xff0000ff;//задать их цвет
+        notification.ledOffMS = 0;//включить светодиоды
+        notification.ledOnMS = 1;
+        notification.flags = notification.flags | Notification.FLAG_SHOW_LIGHTS;
 
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
