@@ -57,13 +57,17 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
 
     void sendMyNotification() {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
         Context context = getApplicationContext();
         Notification.Builder builder = new Notification.Builder(getApplicationContext());
         Resources resouces = context.getResources();
         String songName = resouces.getString(R.string.songname);
         Intent notificationIntent = new Intent(context, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
                 PendingIntent.FLAG_CANCEL_CURRENT);
+
 
         builder.setContentIntent(contentIntent)
                 .setSmallIcon(R.drawable.cat_icon)
