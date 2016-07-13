@@ -54,17 +54,10 @@ public class MainActivity extends AppCompatActivity {
         };
 
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        
+
         if (playButton != null && statusLabel != null) {
             playButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    /*if (!bound){
-                        startService(intent);
-                    }
-                    else {*/
-
-                    /*}*/
-
                     if (audioPlayerService != null) {
                         status = audioPlayerService.getStatus();
 
@@ -102,14 +95,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
-        //sharedPreferences = this.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
-        //SharedPreferences.Editor editor = sharedPreferences.edit();
-        //editor.putString(STATUS_STATE, status.getString());
-        //editor.apply();
-        //editor.apply();
-
-
     }
 
     @Override
@@ -119,7 +104,9 @@ public class MainActivity extends AppCompatActivity {
         //Resources resources = getApplicationContext().getResources();
         //bindService(intent, serviceConnection, 0);
         //status = audioPlayerService.getStatus();
-
+        if (audioPlayerService != null) {
+            audioPlayerService.getStatus();
+        }
 
 
         final TextView statusLabel = (TextView) findViewById(R.id.statusTextView);
