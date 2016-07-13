@@ -1,11 +1,13 @@
 package com.lena.audioplayer;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,53 +19,76 @@ public class MainActivity extends AppCompatActivity {
     public static final String IDLE_STRING = "idle";
     public static final String PLAYING_STRING = "playing";
     public static final String PAUSED_STRING = "paused";
-    IBinder binder;
 
-    SharedPreferences sharedPreferences;
+    AudioPlayerService audioPlayerService;
+    Intent intent;
+    AudioPlayerService.LocalBinder binder;
+    ServiceConnection serviceConnection;
     Status status;
+    boolean bound = false;
+
+    public final String LOG_TAG = "~~~Mine~~~";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
-        sharedPreferences.edit().remove(STATUS_STATE).apply();
-        // or Settings -> Applications -> Manage applications -> (choose your app) -> Clear data or Uninstall
-
-
         final TextView statusLabel = (TextView) findViewById(R.id.statusTextView);
         final Button playButton = (Button) findViewById(R.id.playButton);
 
+        intent = new Intent(MainActivity.this, AudioPlayerService.class);
+        serviceConnection = new ServiceConnection() {
 
+            public void onServiceConnected(ComponentName name, IBinder paramBinder) {
+                Log.d(LOG_TAG, "MainActivity onServiceConnected");
+                binder = (AudioPlayerService.LocalBinder) paramBinder;
+                audioPlayerService = binder.getService();
+                bound = true;
+            }
 
+            public void onServiceDisconnected(ComponentName name) {
+                Log.d(LOG_TAG, "MainActivity onServiceDisconnected");
+                bound = false;
+            }
+        };
+
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        
         if (playButton != null && statusLabel != null) {
             playButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    switch (status) {
-                        case IDLE: {
-                            status = Status.PLAYING;
-                            statusLabel.setText(R.string.status_playing);
-                            playButton.setText(R.string.button_pause);
+                    /*if (!bound){
+                        startService(intent);
+                    }
+                    else {*/
 
-                            //первый запуск сервиса
-                            startService(new Intent(MainActivity.this, AudioPlayerService.class));
-                        }
-                        break;
-                        case PLAYING: {
-                            status = Status.PAUSED;
-                            statusLabel.setText(R.string.status_paused);
-                            playButton.setText(R.string.button_play);
+                    /*}*/
 
-                           // binder = bindService()
+                    if (audioPlayerService != null) {
+                        status = audioPlayerService.getStatus();
+
+
+                        switch (status) {
+                            case IDLE: {
+                                audioPlayerService.play();
+                                statusLabel.setText(R.string.status_playing);
+                                playButton.setText(R.string.button_pause);
+                            }
+                            break;
+                            case PLAYING: {
+                                audioPlayerService.pause();
+                                statusLabel.setText(R.string.status_paused);
+                                playButton.setText(R.string.button_play);
+                            }
+                            break;
+                            case PAUSED: {
+                                audioPlayerService.play();
+                                statusLabel.setText(R.string.status_playing);
+                                playButton.setText(R.string.button_pause);
+                            }
+                            break;
                         }
-                        break;
-                        case PAUSED: {
-                            status = Status.PLAYING;
-                            statusLabel.setText(R.string.status_playing);
-                            playButton.setText(R.string.button_pause);
-                        }
-                        break;
                     }
                 }
             });
@@ -78,11 +103,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        sharedPreferences = this.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(STATUS_STATE, status.getString());
+        //sharedPreferences = this.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
+        //SharedPreferences.Editor editor = sharedPreferences.edit();
+        //editor.putString(STATUS_STATE, status.getString());
         //editor.apply();
-        editor.apply();
+        //editor.apply();
 
 
     }
@@ -91,32 +116,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        Resources resources = getApplicationContext().getResources();
-        //записывать сюда еще и текущее время проигрывания музыки
-        sharedPreferences = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
-        String savedStatusValue = sharedPreferences.getString(STATUS_STATE, resources.getString(R.string.non_status));
+        //Resources resources = getApplicationContext().getResources();
+        //bindService(intent, serviceConnection, 0);
+        //status = audioPlayerService.getStatus();
+
 
 
         final TextView statusLabel = (TextView) findViewById(R.id.statusTextView);
         final Button playButton = (Button) findViewById(R.id.playButton);
 
-        if (!savedStatusValue.equals(resources.getString(R.string.non_status)) &&
-                                    statusLabel != null && playButton != null) {
-            switch (savedStatusValue) {
-                case IDLE_STRING: {
-                    status = Status.IDLE;
+        if (statusLabel != null && playButton != null) {
+            switch (status) {
+                case IDLE: {
                     statusLabel.setText(R.string.status_idle);
                     playButton.setText(R.string.button_play);
                 }
                 break;
-                case PLAYING_STRING: {
-                    status = Status.PLAYING;
+                case PLAYING: {
                     statusLabel.setText(R.string.status_playing);
                     playButton.setText(R.string.button_pause);
                 }
                 break;
-                case PAUSED_STRING: {
-                    status = Status.PAUSED;
+                case PAUSED: {
                     statusLabel.setText(R.string.status_paused);
                     playButton.setText(R.string.button_play);
                 }
@@ -126,8 +147,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-
-        //binder =  bindService(intent, );
     }
 
+    @Override
+    protected void onStop(){
+        super.onStop();
+        // Unbind from the service
+        if (bound) {
+            unbindService(serviceConnection);
+            bound = false;
+        }
+    }
 }
