@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     AudioPlayerService audioPlayerService;
     Intent intent;
-    AudioPlayerService.LocalBinder binder;
+   // MyAIDLInterface binder;
     ServiceConnection serviceConnection;
     Status status;
     boolean bound = false;
@@ -42,13 +42,14 @@ public class MainActivity extends AppCompatActivity {
 
             public void onServiceConnected(ComponentName name, IBinder paramBinder) {
                 Log.d(LOG_TAG, "MainActivity onServiceConnected");
-                binder = (AudioPlayerService.LocalBinder) paramBinder;
-                audioPlayerService = binder.getService();
+                //binder = MyAIDLInterface.Stub.asInterface((IBinder) paramBinder);
+                //MainActivity.this.audioPlayerService = binder.getService();
                 bound = true;
             }
 
             public void onServiceDisconnected(ComponentName name) {
                 Log.d(LOG_TAG, "MainActivity onServiceDisconnected");
+              //  binder = null;
                 bound = false;
             }
         };
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             playButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (audioPlayerService != null) {
-                        status = audioPlayerService.getStatus();
+                        //status = audioPlayerService.getStatus();
 
 
                         switch (status) {
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         //bindService(intent, serviceConnection, 0);
         //status = audioPlayerService.getStatus();
         if (audioPlayerService != null) {
-            audioPlayerService.getStatus();
+           // audioPlayerService.getStatus();
         }
 
 

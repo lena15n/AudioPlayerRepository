@@ -132,6 +132,20 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
 
     }
 
+    /*public Status getStatus() throws RemoteException {
+        return status;
+    }
+
+    @Override
+    public void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat, double aDouble, String aString) throws RemoteException {
+
+    }
+
+    @Override
+    public IBinder asBinder() {
+        return null;
+    }*/
+
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -142,12 +156,14 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
             // Return this instance of AudioPlayerService so clients can call public methods
             return AudioPlayerService.this;
         }
+
+
     }
 
 
-    public Status getStatus() {
+    /*public Status getStatus() {
         return status;
-    }
+    }*/
 
     // Called when MediaPlayer is ready
     @Override
@@ -155,9 +171,19 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
         mediaPlayer.start();
     }
 
+
     @Override
     public IBinder onBind(Intent intent) {
         // A client is binding to the service with bindService()
+
+        /*return new MyAIDLInterface.Stub() {
+
+            @Override
+            public boolean startTradeEngine() throws RemoteException {
+                return false;
+            }
+        };*/
+
         return mBinder;
     }
 
