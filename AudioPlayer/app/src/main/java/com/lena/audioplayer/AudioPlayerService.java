@@ -21,6 +21,7 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
     MediaPlayer mediaPlayer;//can play music and video
     NotificationManager notificationManager;
     Status status;
+    Integer started = 0;
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();// interface for clients that bind
 
@@ -66,6 +67,13 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
         //mediaPlayer.prepareAsync(); // prepare async to not block main thread, might take long! (for buffering, etc)
 
         //mp3 will be started after completion of preparing...
+
+        //prepareMyNotification();
+
+        return mStartMode;
+    }
+
+    public void play() {
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer player) {
@@ -75,22 +83,22 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
         });
 
         mStartMode = Service.START_STICKY;
-        sendMyNotification();
-
-        return mStartMode;
-    }
-
-    public void play() {
-        mediaPlayer.start();
+        //mediaPlayer.start();
         status = Status.PLAYING;
+
+
+        startForeground(1337, prepareMyNotification());
+
+
     }
 
     public void pause() {
         mediaPlayer.pause();
         status = Status.PAUSED;
+        //stopForeground(true);
     }
 
-    void sendMyNotification() {
+    private Notification prepareMyNotification() {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         Context context = getApplicationContext();
@@ -125,26 +133,13 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
         notification.ledOnMS = 1;
         notification.flags = notification.flags | Notification.FLAG_SHOW_LIGHTS;
 
-        NotificationManager notificationManager = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_ID, notification);
 
-
-    }
-
-    /*public Status getStatus() throws RemoteException {
-        return status;
-    }
-
-    @Override
-    public void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat, double aDouble, String aString) throws RemoteException {
+        return notification;
+        //NotificationManager notificationManager = (NotificationManager) context
+        //.getSystemService(Context.NOTIFICATION_SERVICE);
+        //notificationManager.notify(NOTIFICATION_ID, notification);
 
     }
-
-    @Override
-    public IBinder asBinder() {
-        return null;
-    }*/
 
 
     /**
@@ -161,9 +156,9 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
 
-    /*public Status getStatus() {
+    public Status getStatus() {
         return status;
-    }*/
+    }
 
     // Called when MediaPlayer is ready
     @Override
@@ -185,24 +180,6 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
         };*/
 
         return mBinder;
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        // All clients have unbound with unbindService()
-        return mAllowRebind;
-    }
-
-    @Override
-    public void onRebind(Intent intent) {
-        // A client is binding to the service with bindService(),
-        // after onUnbind() has already been called
-    }
-
-    @Override
-    public void onDestroy() {
-        // The service is no longer used and is being destroyed
-        mediaPlayer.release();
     }
 
     @Override

@@ -13,16 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String APP_PREFERENCES = "mysettings";//файл настроек
-    public static final String STATUS_STATE = "status";//храним
-
-    public static final String IDLE_STRING = "idle";
-    public static final String PLAYING_STRING = "playing";
-    public static final String PAUSED_STRING = "paused";
-
     AudioPlayerService audioPlayerService;
     Intent intent;
-   // MyAIDLInterface binder;
+    AudioPlayerService.LocalBinder binder;
     ServiceConnection serviceConnection;
     Status status;
     boolean bound = false;
@@ -37,13 +30,17 @@ public class MainActivity extends AppCompatActivity {
         final TextView statusLabel = (TextView) findViewById(R.id.statusTextView);
         final Button playButton = (Button) findViewById(R.id.playButton);
 
-        intent = new Intent(MainActivity.this, AudioPlayerService.class);
+        //intent = new Intent(MainActivity.this, AudioPlayerService.class);
+        //startService(intent);
+
         serviceConnection = new ServiceConnection() {
 
             public void onServiceConnected(ComponentName name, IBinder paramBinder) {
                 Log.d(LOG_TAG, "MainActivity onServiceConnected");
-                //binder = MyAIDLInterface.Stub.asInterface((IBinder) paramBinder);
-                //MainActivity.this.audioPlayerService = binder.getService();
+
+                binder = (AudioPlayerService.LocalBinder) paramBinder;
+                audioPlayerService = binder.getService();
+
                 bound = true;
             }
 
@@ -54,29 +51,43 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        intent = new Intent(MainActivity.this, AudioPlayerService.class);
+        startService(intent);
+
+
 
         if (playButton != null && statusLabel != null) {
             playButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    if (audioPlayerService != null) {
-                        //status = audioPlayerService.getStatus();
 
+                    bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+                        if (audioPlayerService != null) {
+                            status = audioPlayerService.getStatus();
+                        }
 
                         switch (status) {
                             case IDLE: {
+
+
+                               // startService(intent);
+
                                 audioPlayerService.play();
                                 statusLabel.setText(R.string.status_playing);
                                 playButton.setText(R.string.button_pause);
                             }
                             break;
                             case PLAYING: {
+                                //stopService(intent);
+
                                 audioPlayerService.pause();
                                 statusLabel.setText(R.string.status_paused);
                                 playButton.setText(R.string.button_play);
                             }
                             break;
                             case PAUSED: {
+                               // startService(intent);
+
                                 audioPlayerService.play();
                                 statusLabel.setText(R.string.status_playing);
                                 playButton.setText(R.string.button_pause);
@@ -84,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         }
                     }
-                }
             });
 
             status = Status.IDLE;
@@ -141,9 +151,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop(){
         super.onStop();
         // Unbind from the service
-        if (bound) {
+        /*if (bound) {
             unbindService(serviceConnection);
             bound = false;
-        }
+        }*/
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        // Make sure our notification is gone.
+       // stopForegroundCompat(R.string.foreground_service_started);
     }
 }
