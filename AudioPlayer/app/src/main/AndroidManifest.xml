@@ -26,11 +26,6 @@
                 <action android:name="android.media.browse.MediaBrowserService"/>
             </intent-filter>
         </service>
-        <service
-            android:name=".FakeMyAudioPlayer"
-            android:enabled="true"
-            android:exported="true">
-        </service>
     </application>
 
 </manifest>

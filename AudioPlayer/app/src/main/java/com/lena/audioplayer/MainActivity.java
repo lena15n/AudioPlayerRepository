@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     AudioPlayerService.LocalBinder binder;
     ServiceConnection serviceConnection;
     Status status;
+    Integer serviceStarted = 0;
     boolean bound = false;
 
     public final String LOG_TAG = "~~~Mine~~~";
@@ -30,71 +31,75 @@ public class MainActivity extends AppCompatActivity {
         final TextView statusLabel = (TextView) findViewById(R.id.statusTextView);
         final Button playButton = (Button) findViewById(R.id.playButton);
 
-        //intent = new Intent(MainActivity.this, AudioPlayerService.class);
-        //startService(intent);
-
         serviceConnection = new ServiceConnection() {
-
             public void onServiceConnected(ComponentName name, IBinder paramBinder) {
                 Log.d(LOG_TAG, "MainActivity onServiceConnected");
 
                 binder = (AudioPlayerService.LocalBinder) paramBinder;
                 audioPlayerService = binder.getService();
-
-                bound = true;
+                //bound = true;
             }
 
             public void onServiceDisconnected(ComponentName name) {
                 Log.d(LOG_TAG, "MainActivity onServiceDisconnected");
-              //  binder = null;
-                bound = false;
+                //binder = null;
+                //bound = false;
             }
         };
 
         intent = new Intent(MainActivity.this, AudioPlayerService.class);
-        startService(intent);
-
-
 
         if (playButton != null && statusLabel != null) {
             playButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    serviceConnection = new ServiceConnection() {
+                        public void onServiceConnected(ComponentName name, IBinder paramBinder) {
+                            Log.d(LOG_TAG, "MainActivity onServiceConnected");
+
+                            binder = (AudioPlayerService.LocalBinder) paramBinder;
+                            audioPlayerService = binder.getService();
+                            //bound = true;
+                        }
+
+                        public void onServiceDisconnected(ComponentName name) {
+                            Log.d(LOG_TAG, "MainActivity onServiceDisconnected");
+                            //binder = null;
+                            //bound = false;
+                        }
+                    };
+
+                    intent = new Intent(MainActivity.this, AudioPlayerService.class);
+
 
                     bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
-                        if (audioPlayerService != null) {
-                            status = audioPlayerService.getStatus();
-                        }
+                    if (audioPlayerService != null) {
+                        status = audioPlayerService.getStatus();
 
                         switch (status) {
                             case IDLE: {
-
-
-                               // startService(intent);
-
                                 audioPlayerService.play();
                                 statusLabel.setText(R.string.status_playing);
                                 playButton.setText(R.string.button_pause);
                             }
                             break;
                             case PLAYING: {
-                                //stopService(intent);
-
                                 audioPlayerService.pause();
                                 statusLabel.setText(R.string.status_paused);
                                 playButton.setText(R.string.button_play);
                             }
                             break;
                             case PAUSED: {
-                               // startService(intent);
-
                                 audioPlayerService.play();
                                 statusLabel.setText(R.string.status_playing);
                                 playButton.setText(R.string.button_pause);
                             }
                             break;
                         }
+
+                        unbindService(serviceConnection);
                     }
+                }
             });
 
             status = Status.IDLE;
@@ -113,12 +118,15 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         //Resources resources = getApplicationContext().getResources();
-        //bindService(intent, serviceConnection, 0);
-        //status = audioPlayerService.getStatus();
+
+        //MB другая константа
+        bindService(intent, serviceConnection,  Context.MODE_PRIVATE);
+
         if (audioPlayerService != null) {
-           // audioPlayerService.getStatus();
+            status = audioPlayerService.getStatus();
         }
 
+        unbindService(serviceConnection);
 
         final TextView statusLabel = (TextView) findViewById(R.id.statusTextView);
         final Button playButton = (Button) findViewById(R.id.playButton);

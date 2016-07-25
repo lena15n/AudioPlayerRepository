@@ -11,13 +11,12 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.PowerManager;
 import android.util.Log;
 
 public class AudioPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
     private static final int NOTIFICATION_ID = 1;
     int mStartMode;       // indicates how to behave if the service is killed
-    boolean mAllowRebind; // indicates whether onRebind should be used
+    //boolean mAllowRebind; // indicates whether onRebind should be used
     MediaPlayer mediaPlayer;//can play music and video
     NotificationManager notificationManager;
     Status status;
@@ -30,23 +29,9 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
         // The service is being created
 
         status = Status.IDLE;
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.lately); // initialize it here
 
-        MediaPlayer.OnErrorListener onErrorListener = new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                Log.e(getPackageName(), String.format("Error(%s%s)", what, extra));
-                String playlist = "ERROR";
 
-                //restart() here;
 
-                mediaPlayer.reset();
-
-                return true;
-            }
-        };
-
-        mediaPlayer.setOnErrorListener(onErrorListener);
 
     }
 
@@ -54,14 +39,12 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
     public int onStartCommand(Intent intent, int flags, int startId) {
         // The service is starting, due to a call to startService()
 
-        //Здесь создать новый отдельный поток!!! :
-
         //если скачиваем песню из интернета, то надо использовать:
         //      player.prepareAsync();
         //      player.start();
 
-        mediaPlayer.setOnPreparedListener(this);
-        mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        /*mediaPlayer.setOnPreparedListener(this);
+        mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);*/
         //and WifiLock when work with the Internet
 
         //mediaPlayer.prepareAsync(); // prepare async to not block main thread, might take long! (for buffering, etc)
@@ -74,22 +57,32 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     public void play() {
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer player) {
-                player.start();
-                status = Status.PLAYING;
-            }
-        });
+        if (started == 0) {
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.lately); // initialize it here
+            MediaPlayer.OnErrorListener onErrorListener = new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    Log.e(getPackageName(), String.format("Error(%s%s)", what, extra));
 
+                    //restart() here;
+
+                    mediaPlayer.reset();
+
+                    return true;
+                }
+            };
+
+            mediaPlayer.setOnErrorListener(onErrorListener);
+        }
+
+        mediaPlayer.start();
         mStartMode = Service.START_STICKY;
-        //mediaPlayer.start();
         status = Status.PLAYING;
 
-
-        startForeground(1337, prepareMyNotification());
-
-
+        if (started == 0) {
+            startForeground(1337, prepareMyNotification());
+            started = 1;
+        }
     }
 
     public void pause() {
@@ -141,7 +134,6 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
 
     }
 
-
     /**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
@@ -151,10 +143,7 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
             // Return this instance of AudioPlayerService so clients can call public methods
             return AudioPlayerService.this;
         }
-
-
     }
-
 
     public Status getStatus() {
         return status;
@@ -166,25 +155,14 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
         mediaPlayer.start();
     }
 
-
     @Override
     public IBinder onBind(Intent intent) {
-        // A client is binding to the service with bindService()
-
-        /*return new MyAIDLInterface.Stub() {
-
-            @Override
-            public boolean startTradeEngine() throws RemoteException {
-                return false;
-            }
-        };*/
 
         return mBinder;
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        // ... react appropriately ...
         // The MediaPlayer has moved to the Error state, must be reset!
 
         return false;
