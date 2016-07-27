@@ -18,13 +18,11 @@ public class MainActivity extends AppCompatActivity {
     private AudioPlayerService.LocalBinder binder;
     private ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName name, IBinder paramBinder) {
-
-
             binder = (AudioPlayerService.LocalBinder) paramBinder;
             audioPlayerService = binder.getService();
 
             status = audioPlayerService.getStatus();
-            Log.d(LOG_TAG, "status: " + status + ", AudioService: " + audioPlayerService.hashCode());
+            Log.d(LOG_TAG, "status: " + status + ", AudioService: " + audioPlayerService);
 
             if (statusLabel != null && playButton != null) {
                 switch (status) {
@@ -110,31 +108,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (audioPlayerService != null) {
-            status = audioPlayerService.getStatus();
-
-            switch (status) {
-                case IDLE: {
-                    audioPlayerService.play();
-                    statusLabel.setText(R.string.status_idle);
-                    playButton.setText(R.string.button_play);
-                }
-                break;
-                case PLAYING: {
-                    audioPlayerService.pause();
-                    statusLabel.setText(R.string.status_playing);
-                    playButton.setText(R.string.button_pause);
-                }
-                break;
-                case PAUSED: {
-                    audioPlayerService.play();
-                    statusLabel.setText(R.string.status_paused);
-                    playButton.setText(R.string.button_play);
-                }
-                break;
-            }
-        }
     }
 
 

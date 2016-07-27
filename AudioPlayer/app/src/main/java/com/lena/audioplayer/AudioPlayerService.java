@@ -24,12 +24,22 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
     @Override
     public void onCreate() {
         // The service is being created
+        super.onCreate();
 
         status = Status.IDLE;
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.lately); // initialize it here
+        MediaPlayer.OnErrorListener onErrorListener = new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                Log.e(getPackageName(), String.format("Error(%s%s)", what, extra));
+                mediaPlayer.reset();
 
+                return true;
+            }
+        };
 
-
-
+        mediaPlayer.setOnErrorListener(onErrorListener);
+        startForeground(1337, prepareMyNotification());
     }
 
     @Override
@@ -38,26 +48,8 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     public void play() {
-        if (started == 0) {
-            mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.lately); // initialize it here
-            MediaPlayer.OnErrorListener onErrorListener = new MediaPlayer.OnErrorListener() {
-                @Override
-                public boolean onError(MediaPlayer mp, int what, int extra) {
-                    Log.e(getPackageName(), String.format("Error(%s%s)", what, extra));
-                    mediaPlayer.reset();
-
-                    return true;
-                }
-            };
-
-            mediaPlayer.setOnErrorListener(onErrorListener);
-        }
-
         mediaPlayer.start();
         status = Status.PLAYING;
-
-
-        startForeground(1337, prepareMyNotification());
     }
 
     public void pause() {
