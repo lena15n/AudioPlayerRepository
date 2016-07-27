@@ -14,9 +14,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class AudioPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
-    private static final int NOTIFICATION_ID = 1;
-    int mStartMode;       // indicates how to behave if the service is killed
-    //boolean mAllowRebind; // indicates whether onRebind should be used
     MediaPlayer mediaPlayer;//can play music and video
     NotificationManager notificationManager;
     Status status;
@@ -37,23 +34,7 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // The service is starting, due to a call to startService()
-
-        //если скачиваем песню из интернета, то надо использовать:
-        //      player.prepareAsync();
-        //      player.start();
-
-        /*mediaPlayer.setOnPreparedListener(this);
-        mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);*/
-        //and WifiLock when work with the Internet
-
-        //mediaPlayer.prepareAsync(); // prepare async to not block main thread, might take long! (for buffering, etc)
-
-        //mp3 will be started after completion of preparing...
-
-        //prepareMyNotification();
-
-        return mStartMode;
+        return START_STICKY;
     }
 
     public void play() {
@@ -63,9 +44,6 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
                 @Override
                 public boolean onError(MediaPlayer mp, int what, int extra) {
                     Log.e(getPackageName(), String.format("Error(%s%s)", what, extra));
-
-                    //restart() here;
-
                     mediaPlayer.reset();
 
                     return true;
@@ -76,13 +54,10 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
         }
 
         mediaPlayer.start();
-        mStartMode = Service.START_STICKY;
         status = Status.PLAYING;
 
-        if (started == 0) {
-            startForeground(1337, prepareMyNotification());
-            started = 1;
-        }
+
+        startForeground(1337, prepareMyNotification());
     }
 
     public void pause() {
@@ -149,7 +124,6 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
         return status;
     }
 
-    // Called when MediaPlayer is ready
     @Override
     public void onPrepared(MediaPlayer mp) {
         mediaPlayer.start();
