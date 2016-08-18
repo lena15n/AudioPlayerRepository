@@ -1,7 +1,6 @@
 package com.lena.audioplayer;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -15,11 +14,11 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     private AudioPlayerService audioPlayerService;
     private Intent intent;
-    private AudioPlayerService.LocalBinder binder;
+    //private AudioPlayerService.LocalBinder binder;
     private ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName name, IBinder paramBinder) {
-            binder = (AudioPlayerService.LocalBinder) paramBinder;
-            audioPlayerService = binder.getService();
+//            binder = (AudioPlayerService.LocalBinder) paramBinder;
+//            audioPlayerService = binder.getService();
 
             status = audioPlayerService.getStatus();
             Log.d(LOG_TAG, "status: " + status + ", AudioService: " + audioPlayerService);
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         playButton = (Button) findViewById(R.id.playButton);
 
         intent = new Intent(MainActivity.this, AudioPlayerService.class);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        //bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
         if (playButton != null && statusLabel != null) {
             playButton.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +114,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        unbindService(serviceConnection);
+        //unbindService(serviceConnection);
     }
 }
