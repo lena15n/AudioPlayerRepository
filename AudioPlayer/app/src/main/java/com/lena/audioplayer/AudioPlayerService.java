@@ -13,7 +13,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-public class AudioPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+public class AudioPlayerService extends Service implements MediaPlayer.OnErrorListener {
     MediaPlayer mediaPlayer;//can play music and video
     NotificationManager notificationManager;
     Status status;
@@ -118,11 +118,6 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public Status getStatus() {
         return status;
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        mediaPlayer.start();
     }
 
     @Override

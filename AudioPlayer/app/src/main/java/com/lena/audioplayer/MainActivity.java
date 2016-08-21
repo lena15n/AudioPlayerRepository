@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                     default: {
-                        status = null;
+                        status = Status.IDLE;
                     }
                 }
             }
@@ -63,12 +63,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        statusLabel = (TextView) findViewById(R.id.statusTextView);
-        playButton = (Button) findViewById(R.id.playButton);
+        statusLabel = (TextView) findViewById(R.id.status_text_view);
+        playButton = (Button) findViewById(R.id.play_button);
 
         intent = new Intent(MainActivity.this, AudioPlayerService.class);
         startService(intent);
-        bindService(intent, serviceConnection, Context.BIND_ABOVE_CLIENT);//Context.BIND_AUTO_CREATE); BIND_ABOVE_CLIENT
+        bindService(intent, serviceConnection, Context.BIND_ABOVE_CLIENT);
 
         if (playButton != null && statusLabel != null) {
             playButton.setOnClickListener(new View.OnClickListener() {
@@ -105,12 +105,6 @@ public class MainActivity extends AppCompatActivity {
             playButton.setText(R.string.button_play);
         }
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
 
     @Override
     protected void onDestroy() {

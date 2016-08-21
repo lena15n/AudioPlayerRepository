@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/song_name_label_text"
         android:textSize="35sp"
-        android:id="@+id/songNameTextView"
+        android:id="@+id/song_name_text_view"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
@@ -22,16 +22,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/status_label_text"
-        android:id="@+id/statusTextView"
+        android:id="@+id/status_text_view"
         android:textSize="30sp"
-        android:layout_below="@+id/songNameTextView"
+        android:layout_below="@+id/song_name_text_view"
         android:layout_alignStart="@+id/seekBar" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/play_button_text"
-        android:id="@+id/playButton"
+        android:id="@+id/play_button"
         android:textSize="20sp"
         android:height="70dp"
         android:width="300dp"
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/seekBar"
         android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/playButton"
-        android:layout_alignEnd="@+id/playButton" />
+        android:layout_alignStart="@+id/play_button"
+        android:layout_alignEnd="@+id/play_button" />
 
 </RelativeLayout>
