@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -18,7 +19,7 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
     Status status;
     Integer started = 0;
     // Binder given to clients
-    //private final IBinder mBinder = new LocalBinder();// interface for clients that bind
+    private final IBinder mBinder = new LocalBinder();// interface for clients that bind
 
     @Override
     public void onCreate() {
@@ -38,7 +39,7 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
         };
 
         mediaPlayer.setOnErrorListener(onErrorListener);
-        startForeground(1337, prepareMyNotification());
+
     }
 
     @Override
@@ -49,6 +50,10 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
     public void play() {
         mediaPlayer.start();
         status = Status.PLAYING;
+        if (started == 0) {
+            startForeground(1337, prepareMyNotification());
+            started = 1;
+        }
     }
 
     public void pause() {
@@ -104,12 +109,12 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
-    /*public class LocalBinder extends Binder {
+    public class LocalBinder extends Binder {
         AudioPlayerService getService() {
             // Return this instance of AudioPlayerService so clients can call public methods
             return AudioPlayerService.this;
         }
-    }*/
+    }
 
     public Status getStatus() {
         return status;
@@ -123,8 +128,7 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
     @Override
     public IBinder onBind(Intent intent) {
 
-        //return mBinder;
-        return null;
+        return mBinder;
     }
 
     @Override
