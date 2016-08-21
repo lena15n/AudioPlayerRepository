@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/songNameLabelText"
+        android:text="@string/song_name_label_text"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_marginStart="54dp"
@@ -23,7 +23,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/statusLabelText"
+        android:text="@string/status_label_text"
         android:id="@+id/statusTextView"
         android:layout_marginTop="46dp"
         android:textSize="30sp"
@@ -33,7 +33,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/playButtonText"
+        android:text="@string/play_button_text"
         android:id="@+id/playButton"
         android:textSize="20sp"
         android:height="70dp"

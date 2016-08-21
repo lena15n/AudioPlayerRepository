@@ -68,7 +68,7 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
         Context context = getApplicationContext();
         Notification.Builder builder = new Notification.Builder(getApplicationContext());
         Resources resouces = context.getResources();
-        String songName = resouces.getString(R.string.songname);
+        String songName = resouces.getString(R.string.song_name);
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
@@ -83,9 +83,9 @@ public class AudioPlayerService extends Service implements MediaPlayer.OnPrepare
                 //.setTicker(res.getString(R.string.warning)) // текст в строке состояния
                 .setWhen(System.currentTimeMillis())
                 .setAutoCancel(true) // уведомление исчезает как только пользователь касается его
-                .setContentTitle(resouces.getString(R.string.notifytitle)) // Заголовок уведомления
-                .setContentText(resouces.getString(R.string.notifytext) + songName) // Текст уведомления
-                .setTicker(resouces.getString(R.string.tickertext)); // Текст бегушей строки
+                .setContentTitle(resouces.getString(R.string.notify_title)) // Заголовок уведомления
+                .setContentText(resouces.getString(R.string.notify_text) + songName) // Текст уведомления
+                .setTicker(resouces.getString(R.string.ticker_text)); // Текст бегушей строки
 
 
         // Notification notification = builder.getNotification(); // до API 16

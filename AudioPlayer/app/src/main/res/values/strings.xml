@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">AudioPlayer</string>
-    <string name="playButtonText">Play</string>
-    <string name="pauseButtonText">Pause</string>
+    <string name="play_button_text">Play</string>
+    <string name="pause_button_text">Pause</string>
 
-    <string name="songNameLabelText">Music.mp3</string>
+    <string name="song_name_label_text">Music.mp3</string>
     <string name="service_name">line on my super servicee</string>
 
-    <string name="statusLabelText">Status:</string>
+    <string name="status_label_text">Status:</string>
     <string name="status_idle">Status: Idle</string>
     <string name="status_playing">Status: Playing</string>
     <string name="status_paused">Status: Paused</string>
@@ -15,10 +15,10 @@
     <string name="button_play">Play</string>
     <string name="button_pause">Pause</string>
 
-    <string name="notifytitle">Два тапка мне в рот да это же..!</string>
-    <string name="notifytext">А это текст))</string>
-    <string name="tickertext">Охренеть, бегущая строка, бежит-бежит, бежит, опять бежит</string>
+    <string name="notify_title">Два тапка мне в рот да это же..!</string>
+    <string name="notify_text">А это текст))</string>
+    <string name="ticker_text">Охренеть, бегущая строка, бежит-бежит, бежит, опять бежит</string>
 
-    <string name="songname">Lately.mp3</string>
+    <string name="song_name">Lately.mp3</string>
     <string name="foreground_service_started">форграунд service стартед</string>
 </resources>
